@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ennadifi Woodworks | Catalogue Professionnel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        w: {
+                            50:'#faf7f4', 100:'#f2ebe3', 200:'#e5d5c3', 300:'#d4b896',
+                            400:'#c09a6a', 500:'#a67c52', 600:'#8a6140', 700:'#6b4a2f',
+                            800:'#4e3320', 900:'#321f11', 950:'#1a0e06'
+                        },
+                        gold: '#c9973e',
+                        cream: '#fdf9f4'
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['"DM Sans"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'DM Sans', sans-serif; }
+        h1,h2,h3,h4 { font-family: 'Cormorant Garamond', serif; }
+        body { background: #fdf9f4; color: #321f11; }
+        .view-section { animation: rise .45s cubic-bezier(.22,.68,0,1.2); }
+        @keyframes rise { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        .card-hover { transition: transform .3s ease, box-shadow .3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(50,31,17,.15); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f2ebe3; }
+        ::-webkit-scrollbar-thumb { background: #a67c52; border-radius: 3px; }
+        .nav-pill { transition: all .25s; border-radius: 9999px; padding: 6px 18px; font-size:.8rem; letter-spacing:.08em; text-transform:uppercase; font-weight:600; }
+        .nav-pill.active, .nav-pill:hover { background:#321f11; color:#fdf9f4; }
+        .tag-cat { font-size:.65rem; letter-spacing:.12em; text-transform:uppercase; background:#321f11; color:#c9973e; padding:3px 10px; border-radius:4px; font-weight:700; }
+        .toast-bar { transform: translateY(80px); transition: transform .35s cubic-bezier(.22,.68,0,1.2); }
+        .toast-bar.show { transform: translateY(0); }
+        .btn-primary { background:#321f11; color:#fdf9f4; border-radius:10px; font-weight:600; transition:.2s; }
+        .btn-primary:hover { background:#6b4a2f; }
+        .btn-gold { background:#c9973e; color:#321f11; border-radius:10px; font-weight:700; transition:.2s; }
+        .btn-gold:hover { background:#a67c52; color:#fff; }
+        .btn-green { background:#25D366; color:#fff; border-radius:10px; font-weight:700; transition:.2s; }
+        .btn-green:hover { background:#1db954; }
+        .btn-pinterest { background:#E60023; color:#fff; border-radius:10px; font-weight:600; transition:.2s; font-size:.75rem; }
+        .btn-pinterest:hover { background:#c0001d; }
+        .hero-overlay { background: linear-gradient(120deg, rgba(26,14,6,.88) 40%, rgba(50,31,17,.45) 100%); }
+        .cat-tab { padding:8px 20px; border-radius:99px; font-size:.8rem; letter-spacing:.06em; text-transform:uppercase; font-weight:600; border:1.5px solid #e5d5c3; color:#6b4a2f; cursor:pointer; transition:.2s; white-space:nowrap; }
+        .cat-tab:hover, .cat-tab.active { background:#321f11; color:#fdf9f4; border-color:#321f11; }
+        .devis-block { background: linear-gradient(135deg, #321f11 60%, #6b4a2f); border-radius: 20px; padding: 32px; color: #fff; }
+        .devis-block .label { color: #c9973e; font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; font-weight:700; }
+        .info-pill { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,.07); border-radius:12px; padding:10px 14px; font-size:.82rem; color:rgba(255,255,255,.8); }
+        .info-pill i { color:#c9973e; width:14px; }
+        .pinterest-banner { background: linear-gradient(135deg, #E60023, #a0001a); border-radius:14px; padding:14px 18px; display:flex; align-items:center; gap:12px; }
+        /* Lightbox */
+        #lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:9999; align-items:center; justify-content:center; }
+        #lightbox.open { display:flex; }
+        #lightbox img { max-width:92vw; max-height:90vh; border-radius:12px; object-fit:contain; box-shadow:0 30px 80px rgba(0,0,0,.6); }
+        #lightbox-close { position:absolute; top:20px; right:24px; color:#fff; font-size:2rem; cursor:pointer; z-index:10000; opacity:.8; transition:.2s; }
+        #lightbox-close:hover { opacity:1; transform:scale(1.1); }
+        .img-clickable { cursor:zoom-in; }
+        /* Wood cards */
+        .wood-card { border-radius:16px; overflow:hidden; border:2px solid #e5d5c3; transition:.25s; background:#fff; }
+        .wood-card:hover { border-color:#c9973e; transform:translateY(-3px); box-shadow:0 12px 30px rgba(50,31,17,.12); }
+        .wood-swatch-big { height:80px; width:100%; }
+        .mdf-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(201,151,62,.12); border:1px solid rgba(201,151,62,.3); border-radius:99px; padding:3px 12px; font-size:.7rem; color:#8a6140; font-weight:700; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+    <span id="lightbox-close" onclick="closeLightbox()"><i class="fa-solid fa-xmark"></i></span>
+    <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- NAV -->
+<nav class="bg-white border-b border-w-100 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+        <a href="#" onclick="App.go('home')" class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-w-900 rounded-xl flex items-center justify-center">
+                <i class="fa-solid fa-hammer text-gold text-base"></i>
+            </div>
+            <div>
+                <div class="text-w-900 font-bold text-lg font-serif leading-none">ENNADIFI</div>
+                <div class="text-w-500 text-[10px] tracking-[.18em] uppercase leading-none mt-0.5">Menuiserie Artisanale</div>
+            </div>
+        </a>
+        <div class="hidden lg:flex gap-1">
+           
+            <button onclick="App.go('products','${c}')" class="nav-pill text-w-700"></button>
+        </div>
+        <div class="flex items-center gap-4">
+            <button onclick="App.go('woods')" class="hidden md:flex items-center gap-2 text-w-600 hover:text-w-900 text-sm font-semibold">
+                <i class="fa-solid fa-tree text-gold"></i> Types de Bois
+            </button>
+            <a href="tel:+212778036867" class="hidden md:flex items-center gap-2 btn-gold px-4 py-2 text-sm">
+                <i class="fa-solid fa-phone text-sm"></i> Appeler
+            </a>
+            <button class="lg:hidden text-w-800" onclick="document.getElementById('mob-menu').classList.toggle('hidden')">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+    </div>
+    <div id="mob-menu" class="hidden lg:hidden bg-w-50 px-4 py-3 border-t border-w-100 flex flex-wrap gap-2">
+        
+        <button onclick="App.go('products','${c}');document.getElementById('mob-menu').classList.add('hidden')" class="cat-tab"></button>
+        <button onclick="App.go('woods');document.getElementById('mob-menu').classList.add('hidden')" class="cat-tab">🌳 Types de Bois</button>
+    </div>
+</nav>
+
+<main id="root" class="flex-grow max-w-7xl mx-auto w-full px-4 py-8"></main>
+
+<footer class="bg-w-950 text-w-300 py-14 mt-8">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div class="md:col-span-1">
+            <h3 class="text-white text-2xl font-serif font-bold mb-3">Ennadifi <span class="text-gold">Woodworks</span></h3>
+            <p class="text-sm opacity-70 leading-relaxed mb-4">Menuiserie sur mesure de haute qualité. Chaque pièce fabriquée selon vos dimensions exactes.</p>
+            <div class="flex gap-4 text-w-400">
+                <a href="#" class="hover:text-gold"><i class="fa-brands fa-instagram text-lg"></i></a>
+                <a href="#" class="hover:text-gold"><i class="fa-brands fa-facebook text-lg"></i></a>
+                <a href="https://wa.me/212778036867" class="hover:text-gold"><i class="fa-brands fa-whatsapp text-lg"></i></a>
+                <a href="https://pinterest.com/search/pins/?q=menuiserie+bois+maroc" target="_blank" class="hover:text-red-400"><i class="fa-brands fa-pinterest text-lg"></i></a>
+            </div>
+        </div>
+        <div>
+            <h4 class="text-white font-bold uppercase tracking-wider text-xs mb-4">Catalogue</h4>
+            <ul class="space-y-2 text-sm">
+               <li><a href="#" onclick="App.go('products','${c}')" class="hover:text-gold"></a></li>
+                <li><a href="#" onclick="App.go('woods')" class="hover:text-gold">🌳 Types de Bois & MDF</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4 class="text-white font-bold uppercase tracking-wider text-xs mb-4">Service</h4>
+            <ul class="space-y-2 text-sm">
+                <li><a href="#" class="hover:text-gold">Délais de livraison</a></li>
+                <li><a href="#" class="hover:text-gold">Garantie</a></li>
+                <li><a href="#" class="hover:text-gold">À propos</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4 class="text-white font-bold uppercase tracking-wider text-xs mb-4">Contact</h4>
+            <ul class="space-y-3 text-sm">
+                <li class="flex gap-3"><i class="fa-solid fa-phone text-gold mt-0.5"></i><div>+212 778-036867<br><span class="text-xs opacity-50">Lun-Sam 8h-18h</span></div></li>
+                <li class="flex gap-3"><i class="fa-solid fa-envelope text-gold mt-0.5"></i>contact@ennadifi.ma</li>
+                <li class="flex gap-3"><i class="fa-solid fa-location-dot text-gold mt-0.5"></i>Zone Industrielle, Marrakech</li>
+            </ul>
+        </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 mt-10 pt-6 border-t border-w-900 flex justify-between items-center text-xs opacity-40">
+        <p>&copy; 2025 Ennadifi Woodworks. Tous droits réservés.</p>
+    </div>
+</footer>
+
+<div id="toast" class="fixed bottom-6 right-6 toast-bar z-50">
+    <div class="bg-w-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-sm font-medium">
+        <i id="toast-icon" class="fa-solid fa-check-circle text-green-400"></i>
+        <span id="toast-msg">Succès</span>
+    </div>
+</div>
+
+<script>
+function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeLightbox(); });
+
+const WOODS = [
+  { id:'chene',   label:'Chêne', color:'#c4956a', origin:'Europe', hardness:'Très dur', price:'★★★★☆', desc:'Le bois noble par excellence. Résistant, élégant, avec des veines distinctives. Idéal pour meubles haut de gamme, parquets et portes.' },
+  { id:'noyer',   label:'Noyer Noir', color:'#6b4a2f', origin:'Europe / Amérique', hardness:'Dur', price:'★★★★★', desc:'Bois de luxe à la teinte chocolat profonde. Utilisé pour bureaux de direction, tables de prestige et meubles d\'exception.' },
+  { id:'hetre',   label:'Hêtre Massif', color:'#e8c89a', origin:'Europe', hardness:'Dur', price:'★★★☆☆', desc:'Bois robuste et homogène, facile à travailler. Parfait pour chaises, lits et structures solides.' },
+  { id:'pin',     label:'Pin Naturel', color:'#f0dfc0', origin:'Maroc / Europe', hardness:'Tendre', price:'★★☆☆☆', desc:'Léger et économique, avec un aspect rustique et chaleureux. Idéal pour meubles de chambre et décoration campagnarde.' },
+  { id:'cedre',   label:'Cèdre de l\'Atlas', color:'#d4a070', origin:'Maroc', hardness:'Moyen', price:'★★★★☆', desc:'Bois emblématique marocain, naturellement parfumé et résistant aux insectes. Utilisé pour armoires, portes sculptées et escaliers traditionnels.' },
+  { id:'thuya',   label:'Thuya de Maroc', color:'#8b5e3c', origin:'Maroc (Essaouira)', hardness:'Moyen', price:'★★★★★', desc:'Bois rare et précieux à grain unique. Chaque pièce est un chef-d\'œuvre naturel. Utilisé pour artisanat de luxe et meubles d\'exception.' },
+  { id:'acacia',  label:'Acacia Naturel', color:'#b8954a', origin:'Asie / Afrique', hardness:'Très dur', price:'★★★☆☆', desc:'Extrêmement résistant à l\'humidité et aux chocs. Parfait pour tables de salle à manger, cuisines extérieures et mobilier de jardin.' },
+  { id:'bambou',  label:'Bambou Structurel', color:'#c8b86a', origin:'Asie', hardness:'Dur', price:'★★★☆☆', desc:'Matériau écologique à croissance rapide. Aussi résistant que le chêne, idéal pour parquets, plans de travail et meubles modernes.' },
+  { id:'olivier', label:'Olivier Marocain', color:'#8a7a5a', origin:'Maroc / Méditerranée', hardness:'Très dur', price:'★★★★☆', desc:'Bois dense aux veines tourmentées et irrégulières, aspect unique et chaleureux. Utilisé pour objets décoratifs, tables et meubles artistiques.' },
+  { id:'teck',    label:'Teck', color:'#a0724a', origin:'Asie du Sud-Est', hardness:'Dur', price:'★★★★★', desc:'Le roi des bois extérieurs. Naturellement résistant à l\'eau, aux UV et aux insectes. Idéal pour pergolas, terrasses et mobilier de jardin.' },
+];
+
+const MDF_TYPES = [
+  { id:'mdf_std',  label:'MDF Standard', color:'#d9c9ba', thickness:'3 à 30 mm', use:'Usage intérieur', desc:'Panneau de fibres de densité moyenne. Surface lisse, idéale pour peindre ou laquer. Utilisé pour façades de cuisine, meubles TV et rangements.', pros:['Surface parfaitement lisse', 'Économique', 'Facile à travailler', 'Bonne tenue de la vis'], cons:['Sensible à l\'humidité', 'Lourd'] },
+  { id:'mdf_hum',  label:'MDF Hydrofuge', color:'#b8d4b8', thickness:'6 à 25 mm', use:'Salle de bain / Cuisine', desc:'MDF traité contre l\'humidité (couleur verte distinctive). Résiste aux environnements humides sans se déformer.', pros:['Résistant à l\'humidité', 'Stable', 'Surface lisse'], cons:['Plus cher que MDF standard', 'Couleur verte nécessite peinture'] },
+  { id:'mdf_ignif',label:'MDF Ignifugé', color:'#c8b8d8', thickness:'9 à 25 mm', use:'Établissements publics', desc:'MDF traité contre le feu (couleur rose/rouge distinctive). Obligatoire dans certains espaces publics et établissements recevant du public.', pros:['Résistant au feu', 'Conforme normes sécurité'], cons:['Plus cher', 'Moins courant'] },
+  { id:'mdf_fin',  label:'MDF Finition Mélaminé', color:'#e8e0d0', thickness:'6 à 25 mm', use:'Meubles prêts à l\'emploi', desc:'MDF recouvert d\'un film mélaminé (blanc, bois, couleurs). Prêt à l\'emploi sans peinture supplémentaire nécessaire.', pros:['Prêt à l\'emploi', 'Large choix de coloris', 'Économique'], cons:['Difficile à repeindre', 'Pas de finition personnalisée'] },
+  { id:'mdf_ext',  label:'MDF Extérieur', color:'#c8b870', thickness:'9 à 25 mm', use:'Usage extérieur', desc:'MDF traité pour résister aux intempéries. Utilisé pour façades, panneaux extérieurs et mobilier de terrasse couvert.', pros:['Résistant aux intempéries', 'Stable dimensionnellement'], cons:['Plus cher', 'Nécessite finition spéciale'] },
+];
+
+const PINTEREST_URLS = {
+  'Portes':       'https://pinterest.com/search/pins/?q=porte+bois+int%C3%A9rieure+sur+mesure',
+  'Tables':       'https://pinterest.com/search/pins/?q=table+bois+massif+salle+%C3%A0+manger',
+  'Bureaux':      'https://pinterest.com/search/pins/?q=bureau+bois+massif+design',
+  'Armoires':     'https://pinterest.com/search/pins/?q=armoire+bois+sur+mesure+dressing',
+  'Lits':         'https://pinterest.com/search/pins/?q=lit+bois+massif+chambre',
+  'Cuisines':     'https://pinterest.com/search/pins/?q=cuisine+bois+massif+naturelle',
+  'Escaliers':    'https://pinterest.com/search/pins/?q=escalier+bois+design+int%C3%A9rieur',
+  'Fenêtres':     'https://pinterest.com/search/pins/?q=fen%C3%AAtre+bois+sur+mesure',
+  'Bibliothèques':'https://pinterest.com/search/pins/?q=biblioth%C3%A8que+bois+murale+salon',
+  'Pergolas':     'https://pinterest.com/search/pins/?q=pergola+bois+jardin+terrasse',
+};
+
+const PRODUCTS = [
+  // ── PORTES ──
+  { id:1,  cat:'Portes', name:'Porte Entrée Pleine Massif',       img:'https://i.pinimg.com/736x/e1/3b/4f/e13b4f38ad54bd6537ca031e0219dda0.jpg', desc:'Porte massive en bois plein, sécurisée et élégante pour entrée principale.',   rating:4.9, reviews:38 },
+  { id:2,  cat:'Portes', name:'Porte Vitrée Moderne',             img:'https://i.pinimg.com/736x/04/a6/29/04a6295ba4c6585468ff3ba7b656e70a.jpg', desc:'Design contemporain avec panneaux vitrés dépolis, lumière naturelle maîtrisée.',rating:4.7, reviews:22 },
+  { id:3,  cat:'Portes', name:'Porte Coulissante Grange',         img:'https://i.pinimg.com/736x/f4/10/5c/f4105c49d71f87176458314dff66fc26.jpg', desc:'Style barn door avec ferrures en fer forgé, idéale séparation d\'espace.',    rating:4.8, reviews:17 },
+  { id:4,  cat:'Portes', name:'Porte Sculptée Héritage',          img:'https://i.pinimg.com/1200x/8e/1f/b9/8e1fb94933cf4c3c82f45d45229344aa.jpg', desc:'Motifs berbères sculptés à la main, entrée royale au caractère unique.',      rating:5.0, reviews:11 },
+  { id:5,  cat:'Portes', name:'Porte Double Battant Français',    img:'https://i.pinimg.com/736x/af/ec/4c/afec4cc608fdba0bbf448d5fd14e9c53.jpg', desc:'Double battant avec vitrage pleine hauteur, lumière généreuse.',              rating:4.6, reviews:14 },
+  { id:6,  cat:'Portes', name:'Porte Chambre Panneaux',           img:'https://i.pinimg.com/736x/b3/23/a2/b323a24229488f4d0e97f34a7857d9e1.jpg', desc:'Porte intérieure élégante à panneaux profilés, finition soignée.',           rating:4.5, reviews:29 },
+  { id:7,  cat:'Portes', name:'Porte Accordéon Pliante',          img:'https://i.pinimg.com/736x/ba/c5/ee/bac5ee41092fc29a8ec53045003d5d79.jpg', desc:'Idéale pour séparation d\'espace flexible, pliage facile et silencieux.',    rating:4.4, reviews:9  },
+  { id:8,  cat:'Portes', name:'Porte Teck Extérieure',            img:'https://i.pinimg.com/736x/b9/10/0e/b9100e5f1847819971a7c746c706520c.jpg', desc:'Teck résistant aux intempéries pour façade, traitement anti-UV inclus.',    rating:4.8, reviews:20 },
+  { id:9,  cat:'Portes', name:'Porte Persiennes Orientables',     img:'https://i.pinimg.com/1200x/e3/be/a5/e3bea5216a12f38bd8fc24b8af52fb99.jpg', desc:'Lames bois orientables, ventilation naturelle avec intimité préservée.',    rating:4.3, reviews:7  },
+  { id:10, cat:'Portes', name:'Porte Industrielle Métal/Bois',    img:'https://i.pinimg.com/1200x/1b/a2/60/1ba260a12453d1a7031541c6dbcaed0c.jpg', desc:'Cadre acier et remplissage bois naturel, look loft new-yorkais.',           rating:4.7, reviews:15 },
+  { id:11, cat:'Portes', name:'Porte Galandage Murale',           img:'https://i.pinimg.com/1200x/ce/eb/d5/ceebd51f12bb6cd1910d79fe091ac765.jpg', desc:'Glisse dans la cloison, aucun encombrement dans la pièce.',                 rating:4.6, reviews:12 },
+  { id:12, cat:'Portes', name:'Porte Pivot Central Design',       img:'https://i.pinimg.com/1200x/8b/75/21/8b752174ff7cab6ac9230b790e33712a.jpg', desc:'Pivot central spectaculaire, pièce architecturale à part entière.',         rating:4.9, reviews:8  },
+  { id:13, cat:'Portes', name:'Porte Riad Arabesque',             img:'https://i.pinimg.com/736x/e6/a4/27/e6a427ae8292f486e9b5857bbd208bda.jpg', desc:'Arabesques ciselées style riad marocain, cèdre de l\'Atlas sculpté.',       rating:5.0, reviews:19 },
+  { id:14, cat:'Portes', name:'Porte Bois Vieilli Patiné',        img:'https://i.pinimg.com/1200x/b8/87/b2/b887b2410ed576ef7022e39eb6ec2166.jpg', desc:'Finition vieillie authentique pour charme vintage et rustique.',            rating:4.4, reviews:16 },
+  { id:15, cat:'Portes', name:'Porte Cachée Bibliothèque',        img:'https://i.pinimg.com/1200x/bc/44/15/bc44150ccf2ad79fee14b491e919a5b1.jpg', desc:'Porte secrète habillée étagères, dissimulée dans la bibliothèque.',         rating:4.8, reviews:6  },
+  { id:16, cat:'Portes', name:'Porte Coulissante Double Rail',    img:'https://i.pinimg.com/1200x/f2/ba/47/f2ba472371832590fdfdd772ca4ef0c5.jpg', desc:'Deux panneaux glissants, ouverture maximale pour grandes pièces.',          rating:4.5, reviews:23 },
+  { id:17, cat:'Portes', name:'Porte Arrondie Cintrée',           img:'https://i.pinimg.com/736x/47/4e/3e/474e3e97c23ada5ae8be9e08d44da81f.jpg', desc:'Encadrement en arcade avec boiseries courbées, élégance intemporelle.',    rating:4.7, reviews:10 },
+  { id:18, cat:'Portes', name:'Porte Pivotante Invisible',        img:'https://i.pinimg.com/1200x/82/6c/a0/826ca01d414f6180c6df938b616bb0fc.jpg', desc:'Pivot dissimulé, s\'intègre parfaitement dans le mur.',                    rating:4.9, reviews:5  },
+  { id:19, cat:'Portes', name:'Porte Design Géométrique',         img:'https://i.pinimg.com/736x/26/0c/22/260c2249913a4237268787b3b19e68a0.jpg', desc:'Motifs géométriques contemporains, bois massif travaillé avec précision.',  rating:4.3, reviews:18 },
+  { id:20, cat:'Portes', name:'Porte Classique Moulurée',         img:'https://i.pinimg.com/736x/98/06/7a/98067af47198393892673623cf564ba1.jpg', desc:'Moulures traditionnelles élégantes, finition vernis ou laque au choix.',   rating:4.8, reviews:4  },
+  { id:21, cat:'Portes', name:'Porte Intérieure Chêne Huilé',     img:'https://i.pinimg.com/1200x/14/59/4b/14594b566c8fca9d8695d3cf34321f99.jpg', desc:'Chêne massif huilé laissant voir les veines naturelles du bois.',          rating:4.6, reviews:31 },
+  { id:22, cat:'Portes', name:'Porte Aluminium Bois Mixte',       img:'https://i.pinimg.com/736x/48/3d/49/483d4916bd279a1ded04d4dccbf5aab2.jpg', desc:'Cadre aluminium anodisé avec insert bois naturel, robustesse et beauté.',  rating:4.7, reviews:14 },
+  { id:23, cat:'Portes', name:'Porte Louvres Tropicaux',          img:'https://i.pinimg.com/236x/92/29/52/92295254091bc45f7c9466756f783650.jpg', desc:'Lattes horizontales style tropical, aération naturelle optimale.',          rating:4.4, reviews:9  },
+  { id:24, cat:'Portes', name:'Porte Grenier Escamotable',        img:'https://i.pinimg.com/736x/ca/77/40/ca7740d84ff04451aee46fe0033fd988.jpg', desc:'Trappe avec escalier escamotable intégré, accès facile au grenier.',       rating:4.5, reviews:11 },
+  { id:25, cat:'Portes', name:'Porte WC Compacte',                img:'https://i.pinimg.com/1200x/11/41/ea/1141ead694425a64c8e84010c9416ba9.jpg', desc:'Porte fine spécialement conçue pour les petits espaces sanitaires.',       rating:4.2, reviews:43 },
+  { id:26, cat:'Portes', name:'Porte Atelier Bois Brut',          img:'https://i.pinimg.com/736x/b8/cd/fc/b8cdfcd2bce71105f48a9b711c3e109e.jpg', desc:'Plateau bois brut épais, style atelier artisanal authentique.',            rating:4.5, reviews:7  },
+  { id:27, cat:'Portes', name:'Porte Japonaise Shoji',            img:'https://i.pinimg.com/736x/48/50/6f/48506faa302c4f63419e7caa44fb4927.jpg', desc:'Cadre bois léger avec papier de riz tendu, style zen japonais.',           rating:4.6, reviews:13 },
+  { id:28, cat:'Portes', name:'Porte Cuivre Incrusté',            img:'https://i.pinimg.com/736x/b9/10/0e/b9100e5f1847819971a7c746c706520c.jpg', desc:'Incrustations de cuivre martelé sur bois sombre, effet luxueux.',          rating:4.9, reviews:6  },
+  { id:29, cat:'Portes', name:'Porte Coulissante Verre Bois',     img:'https://i.pinimg.com/1200x/b3/dd/f8/b3ddf8a49bb6c223347ee40796318bb2.jpg', desc:'Rail apparent en acier poli, panneau verre dépoli et bois naturel.',       rating:4.7, reviews:20 },
+  { id:30, cat:'Portes', name:'Porte Intérieure Nervurée',        img:'https://i.pinimg.com/1200x/33/0c/dc/330cdccb578770d186b5d937469ed5a5.jpg', desc:'Nervures verticales décoratives, texture subtile et contemporaine.',       rating:4.4, reviews:27 },
+  // ── TABLES ──
+  { id:31, cat:'Tables', name:'Table Fermière Familiale',         img:'https://i.pinimg.com/736x/94/b6/14/94b6141de27d41add3b09b690552338e.jpg', desc:'Grande table conviviale avec finition vieillie, idéale pour grandes familles.', rating:4.8, reviews:42 },
+  { id:32, cat:'Tables', name:'Table Basse Mid-Century',          img:'https://i.pinimg.com/1200x/b5/ae/5b/b5ae5bd6e81846c03ce11b2aae2ec6dc.jpg', desc:'Pieds fuselés iconiques des années 50 et finition noyer premium.',             rating:4.6, reviews:31 },
+  { id:33, cat:'Tables', name:'Table Live Edge Résine Époxy',     img:'https://i.pinimg.com/1200x/be/14/92/be149264e42dd158d30776e8b9580705.jpg', desc:'Bord naturel avec incrustation époxy bleue, pièce unique spectaculaire.',       rating:5.0, reviews:19 },
+  { id:34, cat:'Tables', name:'Table Ronde Déjeuner',             img:'https://i.pinimg.com/1200x/73/92/03/739203fd563fc77f359921e8e5ede61e.jpg', desc:'Compacte et conviviale pour 2 à 4 personnes, sans angle dangereux.',            rating:4.5, reviews:26 },
+  { id:35, cat:'Tables', name:'Table Console Entrée Fine',        img:'https://i.pinimg.com/1200x/00/15/12/001512c73faaacc568ca176194eebc18.jpg', desc:'Fine et élégante pour couloir ou derrière canapé, rangement pratique.',         rating:4.4, reviews:18 },
+  { id:36, cat:'Tables', name:'Table Extensible Scandinave',      img:'https://i.pinimg.com/1200x/68/42/85/68428506e9f66b2ea3a555a35f1bfcb6.jpg', desc:'Rallonge centrale intégrée, passe de 4 à 8 couverts en secondes.',             rating:4.7, reviews:33 },
+  { id:37, cat:'Tables', name:'Table de Conférence Ovale Chêne',  img:'https://i.pinimg.com/1200x/1c/c5/5c/1cc55c34a27f3f1d2bd366114861741e.jpg', desc:'Imposante table de réunion en chêne massif pour 12 à 16 personnes.',            rating:4.9, reviews:8  },
+  { id:38, cat:'Tables', name:'Table de Chevet Tiroir',           img:'https://i.pinimg.com/736x/0c/8f/8c/0c8f8c4d98f4afdf88c277ac67a045c5.jpg', desc:'Petite table d\'appoint avec tiroir coulissant en douceur.',                   rating:4.3, reviews:44 },
+  { id:39, cat:'Tables', name:'Table de Jardin Pliante',          img:'https://i.pinimg.com/1200x/bc/9f/16/bc9f16381905914fe3389c120dc2f0cc.jpg', desc:'Bois traité extérieur autoclavé, repliable et résistante aux UV.',              rating:4.5, reviews:21 },
+  { id:40, cat:'Tables', name:'Table Gigogne Emboîtable x3',      img:'https://i.pinimg.com/736x/0c/b2/42/0cb2427c25cfa33c4f8bef04849b5223.jpg', desc:'Lot de 3 tables s\'emboîtant parfaitement pour optimiser l\'espace.',           rating:4.4, reviews:16 },
+  { id:41, cat:'Tables', name:'Table Basse Tronc Naturel',        img:'https://i.pinimg.com/1200x/65/1d/00/651d001693d488eb4ecdd26effb64c7d.jpg', desc:'Plateau verre sur tronc d\'arbre naturel, pièce unique de décoration.',         rating:4.9, reviews:7  },
+  { id:42, cat:'Tables', name:'Table Industrielle Acier Bois',    img:'https://i.pinimg.com/1200x/bb/2e/3c/bb2e3c1e1361eb30aee96e27e51e5e0b.jpg', desc:'Pieds en acier brut et plateau bois massif, robustesse et caractère.',          rating:4.7, reviews:24 },
+  { id:43, cat:'Tables', name:'Table Basse Hexagonale',           img:'https://i.pinimg.com/1200x/49/7f/79/497f79687971aa317c87e71471e60a96.jpg', desc:'Forme hexagonale originale, parfaite seule ou en groupe modulable.',             rating:4.5, reviews:13 },
+  { id:44, cat:'Tables', name:'Table Haute Mange-Debout',         img:'https://i.pinimg.com/1200x/e5/11/f2/e511f2c35654b9cc61654ff740159940.jpg', desc:'Table 90 cm hauteur pour bar, cuisine ouverte ou espace de travail debout.',   rating:4.6, reviews:19 },
+  { id:45, cat:'Tables', name:'Table Marbre Bois Doré',           img:'https://i.pinimg.com/1200x/78/66/a1/7866a127a2ff017a4aef92caf216a1aa.jpg', desc:'Plateau marbre blanc avec pieds bois cerclés dorés, luxe intemporel.',         rating:4.8, reviews:14 },
+  // ── BUREAUX ──
+  { id:56, cat:'Bureaux', name:'Bureau Exécutif Noyer Massif',    img:'https://i.pinimg.com/1200x/6d/7b/7b/6d7b7b4be125ca5f1166784e02a0a54e.jpg', desc:'Présence imposante, ample espace de rangement et plateau noyer massif huilé.',rating:4.9, reviews:27 },
+  { id:57, cat:'Bureaux', name:'Bureau Minimaliste Épuré',         img:'https://i.pinimg.com/1200x/64/71/9d/64719d92464ac5b7bf866fd0e6cd7a70.jpg', desc:'Plateau simple et net, pieds fins en acier, travail concentré garanti.',      rating:4.5, reviews:39 },
+  { id:58, cat:'Bureaux', name:'Bureau en L Angle Maxi',          img:'https://i.pinimg.com/736x/0c/7f/f5/0c7ff501dd98c9951aa8048a8c27baed.jpg', desc:'Maximise l\'espace dans les angles, surface 2 m × 1,5 m disponible.',         rating:4.7, reviews:22 },
+  { id:59, cat:'Bureaux', name:'Bureau Secrétaire Rabattable',    img:'https://i.pinimg.com/736x/f7/35/33/f735336db4efc92c4fa9e1e307da5f13.jpg', desc:'Plateau rabattable avec niches et compartiments cachés pour papiers.',         rating:4.6, reviews:13 },
+  { id:60, cat:'Bureaux', name:'Bureau Étudiant Compact',         img:'https://i.pinimg.com/736x/20/de/e2/20dee250f48ebe66dcd01f3d794b3d20.jpg', desc:'Petit bureau ergonomique avec tiroir et étagère intégrée, idéal enfant.',     rating:4.3, reviews:51 },
+  { id:61, cat:'Bureaux', name:'Table à Dessin Architecte',       img:'https://i.pinimg.com/736x/f4/56/0e/f4560e113de64c5915f563b5b2b4b983.jpg', desc:'Plateau inclinable 0–75° pour architectes, artistes et dessinateurs.',       rating:4.8, reviews:11 },
+  { id:62, cat:'Bureaux', name:'Bureau Flottant Mural Laqué',     img:'https://i.pinimg.com/1200x/2c/ac/c7/2cacc7ae51087ee933f05bee894a8443.jpg', desc:'Fixation murale invisible, plateau laqué 5 couleurs disponibles.',            rating:4.4, reviews:28 },
+  { id:63, cat:'Bureaux', name:'Bureau Réception Courbé',         img:'https://i.pinimg.com/1200x/ea/56/41/ea56410bc4dc2e8ff952352b1be01565.jpg', desc:'Comptoir d\'accueil courbe pour hall d\'entreprise ou cabinet médical.',     rating:4.9, reviews:6  },
+  { id:64, cat:'Bureaux', name:'Bureau Gaming Renforcé XL',       img:'https://i.pinimg.com/1200x/ea/38/99/ea3899cb3d0351a18edf806600b45d4f.jpg', desc:'Surface 200 cm renforcée avec passe-câbles et support multiple écrans.',     rating:4.6, reviews:34 },
+  { id:65, cat:'Bureaux', name:'Bureau Debout Ajustable',         img:'https://i.pinimg.com/736x/49/04/51/4904510e61d3be6b76c0df8ec422ebfb.jpg', desc:'Hauteur réglable manuellement pour alterner assis/debout tout au long du jour.',rating:4.7, reviews:18 },
+  // ── ARMOIRES ──
+  { id:76, cat:'Armoires', name:'Armoire Vintage Portes Battantes',img:'https://i.pinimg.com/736x/56/13/77/5613773dbe80a2a981c569a90753ac85.jpg', desc:'Grand rangement vêtements style classique, miroir intérieur inclus.',       rating:4.7, reviews:29 },
+  { id:77, cat:'Armoires', name:'Bibliothèque Sol-Plafond',        img:'https://i.pinimg.com/1200x/4c/aa/d1/4caad18ee33c32fa73cef55a7a08e2f3.jpg', desc:'Étagères sur toute la hauteur pour bibliothèque de rêve murale.',          rating:4.9, reviews:15 },
+  { id:78, cat:'Armoires', name:'Meuble TV Console Basse',         img:'https://i.pinimg.com/736x/63/d8/a5/63d8a50325be5119a0682b6758923f06.jpg', desc:'Meuble bas pour téléviseur et appareils multimédia avec câbles cachés.',   rating:4.5, reviews:36 },
+  { id:79, cat:'Armoires', name:'Dressing Modulable Complet',      img:'https://i.pinimg.com/736x/90/14/06/901406dc902828efea960c82ab419534.jpg', desc:'Système de cubes configurables penderie, tiroirs et étagères au choix.',   rating:4.8, reviews:21 },
+  { id:80, cat:'Armoires', name:'Placard Cuisine Garde-Manger',    img:'https://i.pinimg.com/1200x/f9/03/ee/f903ee7f6b15ed064233774688fa3852.jpg', desc:'Étagères profondes réglables pour alimentation et petit électroménager.',  rating:4.6, reviews:17 },
+  { id:81, cat:'Armoires', name:'Vaisselier Vitré Élégant',        img:'https://i.pinimg.com/1200x/17/c4/19/17c4194a27053928f097dc901ecc3bdc.jpg', desc:'Vitrine de présentation pour vaisselle de collection et objets déco.',    rating:4.7, reviews:12 },
+  { id:82, cat:'Armoires', name:'Meuble Salle de Bain Vasque',     img:'https://i.pinimg.com/1200x/21/b9/91/21b991606b61c087eced0335e62e32dc.jpg', desc:'Bois traité anti-humidité, finition imperméable sous vasque encastrée.',  rating:4.5, reviews:23 },
+  { id:85, cat:'Armoires', name:'Cave à Vin Bois Premium',         img:'https://i.pinimg.com/736x/2a/ab/a5/2aaba5a180e4a0381718a831d8d53d25.jpg', desc:'Casiers spéciaux 48 bouteilles avec éclairage intégré et thermomètre.',   rating:4.6, reviews:14 },
+  { id:86, cat:'Armoires', name:'Armoire Chambre 6 Portes',        img:'https://i.pinimg.com/736x/00/91/d7/0091d7328c491e9915c51bff8946cdd9.jpg', desc:'6 portes battantes sur 3 m de large, intérieur aménagé sur mesure.',       rating:4.8, reviews:19 },
+  { id:95, cat:'Armoires', name:'Dressing Ouvert Walk-In',         img:'https://i.pinimg.com/736x/30/c0/86/30c0868d8bf957c0b5d129262d92676e.jpg', desc:'Dressing entièrement ouvert avec penderies, étagères et rangement sacs.',  rating:4.8, reviews:9  },
+  // ── LITS ──
+  { id:96,  cat:'Lits', name:'Lit Plateforme King Size',           img:'https://i.pinimg.com/736x/c3/ba/91/c3ba9153dbc228cc65b9746f460b95c0.jpg', desc:'Cadre bas profil en noyer, design épuré et moderne pour grande chambre.',  rating:4.7, reviews:33 },
+  { id:97,  cat:'Lits', name:'Lit à Baldaquin 4 Colonnes',         img:'https://i.pinimg.com/736x/28/3b/d9/283bd9483aef910b00b482f729420f23.jpg', desc:'Hauteur dramatique pour chambre de luxe, colonnes tournées sur mesure.',   rating:5.0, reviews:12 },
+  { id:98,  cat:'Lits', name:'Lit avec Tiroirs Rangement',         img:'https://i.pinimg.com/736x/c4/71/d9/c471d918de4b846ee89fdf9c9b075a2d.jpg', desc:'4 grands tiroirs intégrés sous le matelas, gain de place impressionnant.',  rating:4.6, reviews:25 },
+  { id:99,  cat:'Lits', name:'Lit Japonais Bas Tatami',            img:'https://i.pinimg.com/736x/f2/f7/62/f2f7620e87a6d98f7e1ec4f028fc8950.jpg', desc:'Cadre au sol style japonais, repose sur lattes pour ventilation optimale.', rating:4.4, reviews:19 },
+  { id:100, cat:'Lits', name:'Lit Rondins Rustique Artisan',       img:'https://i.pinimg.com/1200x/cc/35/48/cc3548f3bb99df0d890e31a9014148ac.jpg', desc:'Fabriqué à la main en troncs naturels écorcés, esprit chalet de montagne.', rating:4.9, reviews:7  },
+  { id:101, cat:'Lits', name:'Lit Superposé Enfants Sécurisé',     img:'https://i.pinimg.com/1200x/15/d7/62/15d762f5437822cd7c4f0a12be95afe4.jpg', desc:'Barrières de sécurité intégrées, échelle robuste, bois non toxique certifié.', rating:4.7, reviews:41 },
+  { id:106, cat:'Lits', name:'Lit Cabine Enfant Avec Bureau',      img:'https://i.pinimg.com/1200x/d8/a1/5d/d8a15dd6f807ccdf63a21312e4195bd8.jpg', desc:'Lit en hauteur avec bureau dessous, organisation parfaite pour petite chambre enfant.', rating:4.9, reviews:37 },
+  { id:109, cat:'Lits', name:'Lit Marocain Kbira Sculpté',         img:'https://i.pinimg.com/736x/86/20/a3/8620a3707b63f29f0c23a1491a99deee.jpg', desc:'Lit de prestige sculpté main style marocain, bois cèdre de l\'Atlas.',     rating:5.0, reviews:11 },
+  { id:113, cat:'Lits', name:'Lit Enfant Cabane Forêt',            img:'https://i.pinimg.com/736x/eb/fe/61/ebfe6125c8f6f6a63393beff5ecec09a.jpg', desc:'Forme cabane avec toit incliné, imagination enfant stimulée nuit après nuit.', rating:4.9, reviews:44 },
+  { id:115, cat:'Lits', name:'Lit Design Scandinave Hêtre',        img:'https://i.pinimg.com/736x/87/ea/b7/87eab7d82a8aa97ab6f96c693bc82d08.jpg', desc:'Hêtre massif naturel, pieds fins coniques, clarté scandinave apaisante.',  rating:4.7, reviews:18 },
+  // ── CUISINES ──
+  { id:116, cat:'Cuisines', name:'Cuisine Campagne Chic Cérusée',  img:'https://i.pinimg.com/736x/56/4a/e7/564ae79be3f367732c658db0b1b6b75a.jpg', desc:'Style provençal avec finition cérusée blanc, poignées fermonnerie dorée.', rating:4.9, reviews:18 },
+  { id:117, cat:'Cuisines', name:'Cuisine Moderne Laquée Mat',      img:'https://i.pinimg.com/736x/63/d8/a5/63d8a50325be5119a0682b6758923f06.jpg', desc:'Façades lisses laquées mat, 30 couleurs RAL disponibles, poignées profilées.', rating:4.7, reviews:24 },
+  { id:118, cat:'Cuisines', name:'Cuisine Industrielle Bois/Métal', img:'https://i.pinimg.com/736x/f3/42/0a/f3420ab8d2df143e57c89aa91d18147c.jpg', desc:'Mix bois naturel et acier noir, look loft new-yorkais authentique.',       rating:4.8, reviews:11 },
+  { id:119, cat:'Cuisines', name:'Cuisine Traditionnelle Marocaine',img:'https://i.pinimg.com/1200x/79/45/64/794564be3c189051430a3fb738e172b0.jpg', desc:'Zellige à la main et cèdre sculpté, authenticité marocaine préservée.',    rating:5.0, reviews:32 },
+  { id:120, cat:'Cuisines', name:'Îlot Central Chêne Massif',       img:'https://i.pinimg.com/1200x/13/e2/6b/13e26be552e0b824f68c4bf9fefdec12.jpg', desc:'Plan de travail central massif 3 m, rangements et bar petit-déjeuner.',   rating:4.6, reviews:15 },
+  { id:121, cat:'Cuisines', name:'Cuisine Scandinave Épurée',       img:'https://i.pinimg.com/1200x/1f/50/bb/1f50bb3e095f82ad675d0b95d967fc38.jpg', desc:'Bois naturel huilé et blanc mat, lignes pures minimalisme scandinave.',   rating:4.5, reviews:20 },
+  { id:123, cat:'Cuisines', name:'Cuisine Luxe Marbre Bois Noir',   img:'https://i.pinimg.com/736x/07/5e/57/075e5708418bfe7931617dd4095256bd.jpg', desc:'Façades bois fumé ébène, plan de travail marbre blanc Carrare, prestige.', rating:4.9, reviews:9  },
+  { id:127, cat:'Cuisines', name:'Cuisine Farmhouse Américaine',    img:'https://i.pinimg.com/1200x/50/1a/d7/501ad75307d783a15ddaacfff00e57cd.jpg', desc:'Évier Belfast, façades shaker bois peint, poignées céramique artisanale.', rating:4.8, reviews:10 },
+  { id:129, cat:'Cuisines', name:'Cuisine Chêne Naturel Vieilli',   img:'https://i.pinimg.com/736x/1f/20/0a/1f200a5f85e9bb37ab0300d548954793.jpg', desc:'Chêne massif vieilli naturellement, nœuds et veines mis en valeur.',       rating:4.9, reviews:14 },
+  // ── ESCALIERS ──
+  { id:131, cat:'Escaliers', name:'Escalier Droit Classique Chêne', img:'https://i.pinimg.com/1200x/54/e2/4d/54e24dcb217411d1295298b000b7e7f7.jpg', desc:'Escalier linéaire en chêne massif, garde-corps barreaux tournés.',         rating:4.9, reviews:14 },
+  { id:132, cat:'Escaliers', name:'Escalier Hélicoïdal Spirale',    img:'https://i.pinimg.com/736x/50/2c/fd/502cfd7dd864454354ed5275a6e57fc3.jpg', desc:'Escalier colimaçon design pur, colonne centrale acier, marches bois.',     rating:5.0, reviews:9  },
+  { id:133, cat:'Escaliers', name:'Escalier Flottant Mural',        img:'https://i.pinimg.com/1200x/c2/da/46/c2da46c0c35a0f5af8fd4bdbe2c6bcfb.jpg', desc:'Marches ancrées dans le mur uniquement, effet aérien spectaculaire.',     rating:4.8, reviews:17 },
+  { id:135, cat:'Escaliers', name:'Escalier Tiroirs Sous Marches',  img:'https://i.pinimg.com/736x/b1/72/d9/b172d9d4b33fee6101ed04635a4d669e.jpg', desc:'Tiroirs coulissants sous chaque marche, rangement optimisé invisible.',    rating:4.8, reviews:8  },
+  { id:139, cat:'Escaliers', name:'Escalier Cèdre Marocain Sculpté',img:'https://i.pinimg.com/1200x/1d/e4/df/1de4df4b170d12a8e50ef90b64bb61a3.jpg', desc:'Cèdre de l\'Atlas sculpté main, garde-corps moucharabieh traditionnel.',  rating:5.0, reviews:5  },
+  { id:141, cat:'Escaliers', name:'Escalier Enfants Toboggan',      img:'https://i.pinimg.com/1200x/3c/11/78/3c1178bf9ffcc73401e48b0926d0b44e.jpg', desc:'Toboggan intégré à côté des marches, montée escalier, descente toboggan.', rating:4.8, reviews:29 },
+  // ── FENÊTRES ──
+  { id:143, cat:'Fenêtres', name:'Fenêtre Bois Double Vitrage',     img:'https://i.pinimg.com/1200x/dc/eb/0f/dceb0f54b557fd64beba608d39c87d6f.jpg', desc:'Menuiserie bois double vitrage 4/16/4, isolation thermique et phonique.',  rating:4.8, reviews:22 },
+  { id:144, cat:'Fenêtres', name:'Fenêtre Oscillo-Battante Chêne',  img:'https://i.pinimg.com/736x/c2/4e/e2/c24ee296bd56bb0c2f3b3d1abfedd7c5.jpg', desc:'Ouvre en battant ou oscille pour ventilation, chêne massif traité.',      rating:4.7, reviews:18 },
+  { id:145, cat:'Fenêtres', name:'Volet Bois Traditionnel',         img:'https://i.pinimg.com/1200x/25/ec/d4/25ecd4dfadff081d337fe4d889d8ddd4.jpg', desc:'Volet battant massif lames fixes ou mobiles, protection solaire totale.',  rating:4.6, reviews:31 },
+  { id:147, cat:'Fenêtres', name:'Porte-Fenêtre Coulissante',       img:'https://i.pinimg.com/736x/41/ec/c3/41ecc3beb201478f0caa2ef326f7a645.jpg', desc:'Grande baie coulissante bois pour accès terrasse, vitrage feuilleté.',    rating:4.9, reviews:10 },
+  { id:149, cat:'Fenêtres', name:'Fenêtre Bois-Alu Hybride',        img:'https://i.pinimg.com/736x/43/1d/c8/431dc8a25761ca67842da5b31dc7f37e.jpg', desc:'Bois côté intérieur et alu extérieur, performance sans entretien.',       rating:4.7, reviews:16 },
+  { id:151, cat:'Fenêtres', name:'Fenêtre Ronde Oeil de Boeuf',     img:'https://i.pinimg.com/736x/b2/b7/40/b2b740922357db6a35210e9c19a01122.jpg', desc:'Fenêtre ronde architecturale, charme rural et détail architectural rare.', rating:4.9, reviews:5  },
+  { id:153, cat:'Fenêtres', name:'Fenêtre Moucharabieh Marocain',   img:'https://i.pinimg.com/1200x/92/c8/b1/92c8b1f2ad7551b22469d646d3efea3e.jpg', desc:'Grille sculptée bois de cèdre, jeux d\'ombres et lumières féeriques.',   rating:5.0, reviews:8  },
+  // ── BIBLIOTHÈQUES ──
+  { id:158, cat:'Bibliothèques', name:'Bibliothèque Murale Complète',  img:'https://i.pinimg.com/1200x/0e/20/c1/0e20c18a940ec0ec3f44b01070442406.jpg', desc:'Couvre tout le mur du sol au plafond, capacité 500+ livres, chêne massif.', rating:4.9, reviews:15 },
+  { id:159, cat:'Bibliothèques', name:'Étagère Design Géométrique',    img:'https://i.pinimg.com/736x/c7/82/29/c78229364515df697b6d39e8bfe5e68c.jpg', desc:'Alvéoles hexagonales ou rectangulaires, sculpture murale et rangement.', rating:4.7, reviews:23 },
+  { id:161, cat:'Bibliothèques', name:'Étagère Modulaire Cubes',       img:'https://i.pinimg.com/1200x/18/6a/ae/186aaec04ec575cf6365d5383acf99ae.jpg', desc:'Système cubes 30×30 empilables, composition libre évolutive à volonté.',  rating:4.6, reviews:31 },
+  { id:163, cat:'Bibliothèques', name:'Bibliothèque avec Échelle',     img:'https://i.pinimg.com/1200x/a1/e1/82/a1e182a98dcce026cb66b4b6045f36db.jpg', desc:'Bibliothèque haute avec échelle coulissante sur rail, style librairie.',  rating:5.0, reviews:6  },
+  { id:165, cat:'Bibliothèques', name:'Bibliothèque Porte Secrète',    img:'https://i.pinimg.com/736x/e4/0c/6f/e40c6f58b972e4e2163ddfc41080b48d.jpg', desc:'Pivote pour révéler une pièce cachée, bibliothèque et porte en une.',    rating:4.9, reviews:4  },
+  { id:168, cat:'Bibliothèques', name:'Bibliothèque Enfant Colorée',   img:'https://i.pinimg.com/736x/51/d0/b2/51d0b2c0b1d78bdac4587ec188dd46c9.jpg', desc:'Couleurs vives formes amusantes, rangement livres et jouets sécurisé.',  rating:4.7, reviews:22 },
+  // ── PERGOLAS ──
+  { id:170, cat:'Pergolas', name:'Pergola Classique Bois Massif',   img:'https://i.pinimg.com/736x/07/bf/f8/07bff83f340a21ed1a40206cb9d4d94f.jpg', desc:'Pergola en pin traité autoclavé, solins et lattes de couverture larges.', rating:4.7, reviews:18 },
+  { id:171, cat:'Pergolas', name:'Pergola Adossée Murale Teck',     img:'https://i.pinimg.com/736x/67/3a/87/673a87c2e1cf1e3322a61de18c727a5b.jpg', desc:'S\'adosse à la façade, teck naturel résistant, espace terrasse couvert.', rating:4.8, reviews:11 },
+  { id:172, cat:'Pergolas', name:'Pergola Bioclimatique Bois',      img:'https://i.pinimg.com/1200x/bf/a6/97/bfa697adce62904f8c281efc74c8143f.jpg', desc:'Lames orientables motorisées adaptant ouverture au soleil et à la pluie.',rating:4.9, reviews:7  },
+  { id:173, cat:'Pergolas', name:'Pergola Carport Véhicule',        img:'https://i.pinimg.com/736x/62/d9/6a/62d96ad763dec92ba704044d5b531aa3.jpg', desc:'Abri voiture en charpente bois, capacité 1 ou 2 véhicules, robuste.',     rating:4.6, reviews:15 },
+  { id:175, cat:'Pergolas', name:'Pergola Pool House Piscine',      img:'https://i.pinimg.com/1200x/e1/12/ca/e112ca315930ee141d4d79eafe1cc7a4.jpg', desc:'Structure couverte au bord de piscine, bois teck imputrescible résistant.', rating:4.9, reviews:5  },
+  { id:176, cat:'Pergolas', name:'Pergola Marocaine Moucharabieh',  img:'https://i.pinimg.com/736x/1f/ea/bc/1feabcf51aca3bf945674cafd389d5b9.jpg', desc:'Colonnes octogonales et plafond moucharabieh sculpté, patio marocain.',   rating:5.0, reviews:8  },
+  { id:178, cat:'Pergolas', name:'Kiosque Pavillon Bois Octagonal', img:'https://i.pinimg.com/1200x/e2/f3/98/e2f3984aa18ca4d6b979583a19bf2022.jpg', desc:'Kiosque hexagonal ou octogonal pour jardin, espace détente romantique.', rating:4.7, reviews:12 },
+  { id:179, cat:'Pergolas', name:'Brise-Soleil Horizontal Bois',    img:'https://i.pinimg.com/1200x/1d/18/a5/1d18a5857f2503a5732a185354c10b5a.jpg', desc:'Lattes bois horizontales en façade, protection solaire et décoration.',   rating:4.5, reviews:16 },
+];
+
+function toast(msg, type='ok') {
+  const el=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  document.getElementById('toast-icon').className=type==='ok'?'fa-solid fa-check-circle text-green-400':'fa-solid fa-exclamation-circle text-red-400';
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3200);
+}
+
+const ALL_CATS = ['Portes','Tables','Bureaux','Armoires','Lits','Cuisines','Escaliers','Fenêtres','Bibliothèques','Pergolas'];
+
+const App = {
+  currentProduct: null,
+
+  go(route, param=null) {
+    const root=document.getElementById('root');
+    window.scrollTo(0,0);
+    if(route==='home')          root.innerHTML=Views.home();
+    else if(route==='products') root.innerHTML=Views.products(param||'All');
+    else if(route==='detail')   { App.currentProduct=PRODUCTS.find(p=>p.id===param); if(App.currentProduct){ root.innerHTML=Views.detail(App.currentProduct); }}
+    else if(route==='woods')    root.innerHTML=Views.woods();
+    else                        root.innerHTML=Views.home();
+    document.querySelectorAll('.nav-pill').forEach(b=>{b.classList.toggle('active',b.textContent.trim()===param);});
+  },
+
+  sendWhatsApp(productName) {
+    const wood = document.getElementById('wood-select')?.value || '';
+    const woodLabel = WOODS.find(w=>w.id===wood)?.label || wood;
+    const finish = document.getElementById('finish-select')?.value || '';
+    const finishLabels = {brut:'Brut (Poncé)',lasure:'Lasure Transparente',mat:'Vernis Mat',brillant:'Vernis Brillant',laque:'Laque Couleur',huile:'Huile Naturelle',cire:'Cire d\'Abeille',teinture:'Teinture + Vernis'};
+    const msg=`Bonjour Ennadifi Woodworks 👋\n\nJe suis intéressé par :\n*${productName}*\n\nEssence : ${woodLabel}\nFinition : ${finishLabels[finish]||finish}\n\nMerci de me contacter pour un devis.`;
+    window.open('https://wa.me/212778036867?text='+encodeURIComponent(msg),'_blank');
+  },
+};
+
+const Views = {
+  home: () => `
+  <div class="view-section">
+    <div class="relative rounded-2xl overflow-hidden mb-14 h-[520px] shadow-2xl">
+      <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1600')] bg-cover bg-center"></div>
+      <div class="hero-overlay absolute inset-0"></div>
+      <div class="relative z-10 h-full flex flex-col justify-end p-10 md:p-16 max-w-2xl">
+        <span class="text-gold font-bold text-xs tracking-[.22em] uppercase mb-3 block">Menuiserie Artisanale · Marrakech</span>
+        <h1 class="text-white text-5xl md:text-6xl font-serif font-bold leading-tight mb-5">Du bois, taillé <br>pour vous.</h1>
+        <p class="text-white/75 mb-8 text-base leading-relaxed">Portes, meubles, cuisines, escaliers, pergolas & plus — fabriqués à la main selon vos dimensions exactes.</p>
+        <div class="flex flex-wrap gap-3">
+          <button onclick="App.go('products')" class="btn-gold px-7 py-3 text-sm shadow-lg">Voir les ${PRODUCTS.length} modèles</button>
+          <a href="https://wa.me/212778036867" target="_blank" class="btn-green px-7 py-3 text-sm shadow-lg flex items-center gap-2">
+            <i class="fa-brands fa-whatsapp text-lg"></i> Demander un devis
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="text-4xl font-serif font-bold text-w-900 mb-8 text-center">Nos ${ALL_CATS.length} Catégories</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-14">
+      ${ALL_CATS.map(cat=>`
+      <div onclick="App.go('products','${cat}')" class="cursor-pointer group relative h-40 rounded-xl overflow-hidden shadow-md card-hover bg-w-800">
+        <div class="absolute inset-0 bg-w-800/60 group-hover:bg-w-900/50 transition flex flex-col items-center justify-center">
+          <h3 class="text-white text-lg font-serif font-bold">${cat}</h3>
+          <span class="text-gold text-[10px] tracking-widest uppercase mt-1">${PRODUCTS.filter(p=>p.cat===cat).length} modèles</span>
+        </div>
+      </div>`).join('')}
+    </div>
+
+    <!-- Wood types promo -->
+    <div onclick="App.go('woods')" class="cursor-pointer bg-gradient-to-r from-w-900 to-w-700 rounded-2xl p-8 mb-10 flex items-center gap-6 hover:shadow-2xl transition card-hover">
+      <div class="flex gap-2 flex-shrink-0">
+        ${WOODS.slice(0,5).map(w=>`<div class="w-8 h-12 rounded-lg shadow-md border-2 border-white/20" style="background:${w.color}"></div>`).join('')}
+      </div>
+      <div class="flex-grow">
+        <h3 class="text-white text-2xl font-serif font-bold mb-1">Guide des Bois & MDF</h3>
+        <p class="text-w-300 text-sm">Découvrez chêne, noyer, cèdre marocain, thuya, acacia et tous les types de MDF — pour choisir le meilleur matériau pour votre projet.</p>
+      </div>
+      <div class="btn-gold px-5 py-2.5 text-sm flex-shrink-0 hidden md:block">Découvrir →</div>
+    </div>
+
+    <!-- Pinterest Banner -->
+    <div class="pinterest-banner mb-10">
+      <i class="fa-brands fa-pinterest text-white text-4xl flex-shrink-0"></i>
+      <div class="flex-grow">
+        <div class="text-white font-bold text-base mb-0.5">Vous n'avez pas trouvé votre bonheur ?</div>
+        <div class="text-white/70 text-sm">Explorez Pinterest pour trouver l'inspiration, puis revenez nous demander un devis sur mesure.</div>
+      </div>
+      <a href="https://pinterest.com/search/pins/?q=menuiserie+bois+sur+mesure" target="_blank" class="flex-shrink-0 bg-white text-red-600 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-red-50 transition whitespace-nowrap">
+        <i class="fa-brands fa-pinterest mr-1"></i> Voir sur Pinterest
+      </a>
+    </div>
+
+    <div class="bg-white border border-w-100 rounded-2xl p-8 mb-10 shadow-sm">
+      <h2 class="text-3xl font-serif font-bold text-w-900 text-center mb-8">Comment obtenir votre devis ?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        ${[['fa-eye','Choisissez','Parcourez nos modèles et trouvez celui qui vous inspire.'],['fa-tree','Choisissez le bois','Consultez notre guide des essences et MDF disponibles.'],['fa-paper-plane','Contactez','Envoyez votre configuration par WhatsApp ou téléphone.'],['fa-hammer','Fabrication','Nous fabriquons votre pièce sur mesure et vous livrons.']].map(([icon,title,desc],i)=>`
+        <div class="text-center">
+          <div class="w-14 h-14 bg-w-900 rounded-2xl flex items-center justify-center mx-auto mb-4 relative">
+            <i class="fa-solid ${icon} text-gold text-xl"></i>
+            <span class="absolute -top-2 -right-2 w-6 h-6 bg-gold text-w-900 rounded-full text-xs font-bold flex items-center justify-center">${i+1}</span>
+          </div>
+          <h3 class="font-serif font-bold text-lg text-w-900 mb-1">${title}</h3>
+          <p class="text-w-500 text-sm leading-relaxed">${desc}</p>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="bg-w-900 text-white rounded-2xl p-8 grid grid-cols-1 md:grid-cols-4 gap-6 text-center shadow-xl">
+      <div><i class="fa-solid fa-ruler-combined text-3xl text-gold mb-3 block"></i><h3 class="font-serif text-xl mb-1">Sur Mesure Exact</h3><p class="text-w-300 text-sm">Vos dimensions au millimètre</p></div>
+      <div><i class="fa-solid fa-comments text-3xl text-gold mb-3 block"></i><h3 class="font-serif text-xl mb-1">Devis Gratuit</h3><p class="text-w-300 text-sm">Réponse sous 24h</p></div>
+      <div><i class="fa-solid fa-star text-3xl text-gold mb-3 block"></i><h3 class="font-serif text-xl mb-1">Bois Premium</h3><p class="text-w-300 text-sm">Chêne, noyer, thuya, cèdre</p></div>
+      <div><i class="fa-solid fa-boxes-stacking text-3xl text-gold mb-3 block"></i><h3 class="font-serif text-xl mb-1">${PRODUCTS.length}+ Modèles</h3><p class="text-w-300 text-sm">10 catégories de produits</p></div>
+    </div>
+  </div>`,
+
+  products: (cat='All') => {
+    const cats=['All',...ALL_CATS];
+    const list=cat==='All'?PRODUCTS:PRODUCTS.filter(p=>p.cat===cat);
+    const pinterestUrl = cat!=='All' ? PINTEREST_URLS[cat] : 'https://pinterest.com/search/pins/?q=menuiserie+bois+sur+mesure';
+    return `<div class="view-section">
+      <div class="flex gap-2 flex-wrap mb-6 pb-4 border-b border-w-100 overflow-x-auto">
+        ${cats.map(c=>`<button onclick="App.go('products','${c}')" class="cat-tab ${c===cat?'active':''}">${c==='All'?'Tout voir ('+PRODUCTS.length+')':c+' ('+PRODUCTS.filter(p=>p.cat===c).length+')'}</button>`).join('')}
+        <button onclick="App.go('woods')" class="cat-tab" style="border-color:#c9973e;color:#8a6140;">🌳 Types de Bois</button>
+      </div>
+      <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+        <h2 class="text-3xl font-serif font-bold text-w-900">${cat==='All'?'Catalogue Complet':cat}</h2>
+        <div class="flex items-center gap-3">
+          <span class="text-sm text-w-500">${list.length} produit${list.length>1?'s':''}</span>
+          <a href="${pinterestUrl}" target="_blank" class="btn-pinterest px-4 py-2 flex items-center gap-2 text-sm">
+            <i class="fa-brands fa-pinterest text-base"></i> Pinterest
+          </a>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        ${list.map(p=>`
+        <div class="bg-white rounded-xl shadow-sm border border-w-50 overflow-hidden card-hover flex flex-col">
+          <div class="h-52 overflow-hidden bg-w-100 relative cursor-zoom-in" onclick="openLightbox('${p.img}')">
+            <img src="${p.img}" loading="lazy" class="w-full h-full object-cover transition duration-700 hover:scale-105" onerror="this.src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=60'">
+            <div class="absolute inset-0 bg-black/0 hover:bg-black/10 transition flex items-center justify-center">
+              <i class="fa-solid fa-magnifying-glass-plus text-white text-2xl opacity-0 hover:opacity-100 transition drop-shadow-lg"></i>
+            </div>
+            <span class="tag-cat absolute top-3 left-3">${p.cat}</span>
+            <span class="absolute bottom-3 right-3 bg-black/50 text-white text-[10px] px-2 py-1 rounded-full"><i class="fa-solid fa-expand text-xs mr-1"></i>Agrandir</span>
+          </div>
+          <div class="p-4 flex flex-col flex-grow">
+            <h3 class="font-serif font-bold text-lg text-w-900 mb-1 leading-tight">${p.name}</h3>
+            <p class="text-w-500 text-xs mb-2 line-clamp-2">${p.desc}</p>
+            <div class="text-[10px] text-gold mb-3">
+              ${'★'.repeat(Math.floor(p.rating))}${'☆'.repeat(5-Math.floor(p.rating))} <span class="text-w-400">(${p.reviews})</span>
+            </div>
+            <div class="mt-auto pt-3 border-t border-w-50">
+              <button onclick="App.go('detail',${p.id})" class="w-full btn-primary py-2.5 text-sm rounded-lg">
+                Demander un Devis <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
+              </button>
+            </div>
+          </div>
+        </div>`).join('')}
+      </div>
+      <div class="pinterest-banner mt-10">
+        <i class="fa-brands fa-pinterest text-white text-4xl flex-shrink-0"></i>
+        <div class="flex-grow">
+          <div class="text-white font-bold text-base mb-0.5">Vous cherchez d'autres inspirations ?</div>
+          <div class="text-white/70 text-sm">Pinterest regorge d'idées ! Trouvez votre modèle, envoyez-nous la photo, on le fabrique sur mesure.</div>
+        </div>
+        <a href="${pinterestUrl}" target="_blank" class="flex-shrink-0 bg-white text-red-600 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-red-50 transition whitespace-nowrap">
+          <i class="fa-brands fa-pinterest mr-1"></i> Explorer
+        </a>
+      </div>
+    </div>`;
+  },
+
+  detail: (p) => {
+    const pinterestUrl = PINTEREST_URLS[p.cat] || `https://pinterest.com/search/pins/?q=${encodeURIComponent(p.name+' bois')}`;
+    return `<div class="view-section">
+      <button onclick="App.go('products','${p.cat}')" class="mb-5 flex items-center gap-2 text-w-600 hover:text-w-900 text-sm font-medium">
+        <i class="fa-solid fa-arrow-left"></i> Retour à ${p.cat}
+      </button>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <!-- Left: Image -->
+        <div class="space-y-4">
+          <div class="rounded-2xl overflow-hidden shadow-xl cursor-zoom-in relative group" onclick="openLightbox('${p.img}')">
+            <img src="${p.img}" class="w-full h-[380px] object-cover transition duration-500 group-hover:scale-105" onerror="this.src='https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80'">
+            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition flex items-center justify-center">
+              <div class="bg-white/90 rounded-full px-4 py-2 text-w-900 text-sm font-semibold opacity-0 group-hover:opacity-100 transition flex items-center gap-2">
+                <i class="fa-solid fa-expand"></i> Voir en grand
+              </div>
+            </div>
+          </div>
+          <a href="${pinterestUrl}" target="_blank" class="flex items-center gap-3 bg-red-50 border border-red-100 rounded-xl p-4 hover:bg-red-100 transition group">
+            <i class="fa-brands fa-pinterest text-[#E60023] text-3xl flex-shrink-0"></i>
+            <div class="flex-grow">
+              <div class="font-semibold text-red-800 text-sm">Ce modèle ne vous convient pas ?</div>
+              <div class="text-red-600 text-xs">Parcourez d'autres inspirations ${p.cat.toLowerCase()} sur Pinterest →</div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Right: Config + CTA -->
+        <div class="space-y-6">
+          <div>
+            <span class="tag-cat">${p.cat}</span>
+            <h1 class="text-3xl font-serif font-bold text-w-900 mt-2 mb-1">${p.name}</h1>
+            <p class="text-w-500 text-sm border-l-4 border-gold pl-3">${p.desc}</p>
+            <div class="flex gap-1 mt-2 text-gold text-xs">
+              ${'★'.repeat(Math.floor(p.rating))} <span class="text-w-400 ml-1">${p.rating} · ${p.reviews} avis</span>
+            </div>
+          </div>
+
+          <!-- Bois -->
+          <div class="bg-white border border-w-100 rounded-2xl p-5 shadow-sm">
+            <h4 class="font-serif text-lg font-bold text-w-900 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-tree text-gold text-base"></i> Essence de bois
+            </h4>
+            <select id="wood-select" class="w-full border-2 border-w-200 rounded-xl px-4 py-3 text-w-900 font-semibold outline-none focus:border-gold bg-white appearance-none cursor-pointer">
+              ${WOODS.map(w=>`<option value="${w.id}">${w.label} — ${w.origin}</option>`).join('')}
+            </select>
+            <div class="flex gap-2 mt-3 flex-wrap">
+              ${WOODS.map(w=>`<div style="background:${w.color};width:28px;height:28px;border-radius:6px;border:2px solid transparent;cursor:pointer;transition:.2s;" title="${w.label}" onclick="document.getElementById('wood-select').value='${w.id}'"></div>`).join('')}
+            </div>
+            <button onclick="App.go('woods')" class="mt-3 text-xs text-gold hover:text-w-700 font-semibold flex items-center gap-1">
+              <i class="fa-solid fa-circle-info text-xs"></i> En savoir plus sur les essences de bois →
+            </button>
+          </div>
+
+          <!-- Finition -->
+          <div class="bg-white border border-w-100 rounded-2xl p-5 shadow-sm">
+            <h4 class="font-serif text-lg font-bold text-w-900 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-spray-can-sparkles text-gold text-base"></i> Finition
+            </h4>
+            <select id="finish-select" class="w-full border-2 border-w-200 rounded-xl px-4 py-3 text-w-900 font-semibold outline-none focus:border-gold bg-white appearance-none cursor-pointer">
+              <option value="brut">Brut (Poncé)</option>
+              <option value="lasure">Lasure Transparente</option>
+              <option value="mat">Vernis Mat Protection</option>
+              <option value="brillant">Vernis Brillant</option>
+              <option value="laque">Laque Couleur Personnalisée</option>
+              <option value="huile">Huile Naturelle Bois</option>
+              <option value="cire">Cire d'Abeille</option>
+              <option value="teinture">Teinture + Vernis</option>
+            </select>
+          </div>
+
+          <!-- CTA DEVIS -->
+          <div class="devis-block">
+            <div class="inline-flex items-center gap-2 bg-gold/20 border border-gold/30 rounded-full px-3 py-1 text-xs text-gold font-semibold mb-4">
+              <i class="fa-solid fa-shield-check text-xs"></i> Devis gratuit · Réponse sous 24h
+            </div>
+            <h3 class="font-serif text-2xl font-bold text-white mb-2">Obtenez votre prix personnalisé</h3>
+            <p class="text-white/70 text-sm mb-5 leading-relaxed">Chaque pièce est unique. Contactez-nous avec votre configuration et recevez un devis détaillé adapté à votre projet.</p>
+            <div class="grid grid-cols-1 gap-2 mb-5">
+              <div class="info-pill"><i class="fa-solid fa-ruler-combined"></i> Prix calculé selon vos dimensions exactes</div>
+              <div class="info-pill"><i class="fa-solid fa-tree"></i> Tarif selon l'essence de bois choisie</div>
+              <div class="info-pill"><i class="fa-solid fa-truck"></i> Livraison incluse dans le devis</div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button onclick="App.sendWhatsApp('${p.name}')" class="flex-1 btn-green py-3.5 text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg">
+                <i class="fa-brands fa-whatsapp text-xl"></i> Demander le devis
+              </button>
+              <a href="tel:+212778036867" class="flex-1 bg-white/15 hover:bg-white/25 border border-white/25 text-white py-3.5 text-sm rounded-xl flex items-center justify-center gap-2 font-semibold transition">
+                <i class="fa-solid fa-phone"></i> Appeler
+              </a>
+            </div>
+            <p class="text-white/40 text-[11px] text-center mt-4">Lun–Sam · 8h–18h · Marrakech · +212 778-036867</p>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  woods: () => `
+  <div class="view-section">
+    <button onclick="App.go('home')" class="mb-5 flex items-center gap-2 text-w-600 hover:text-w-900 text-sm font-medium">
+      <i class="fa-solid fa-arrow-left"></i> Retour à l'accueil
+    </button>
+
+    <div class="text-center mb-12">
+      <span class="text-gold font-bold text-xs tracking-[.22em] uppercase mb-3 block">Guide Matériaux</span>
+      <h1 class="text-5xl font-serif font-bold text-w-900 mb-4">Bois & MDF</h1>
+      <p class="text-w-500 max-w-2xl mx-auto leading-relaxed">Choisir le bon matériau est essentiel pour la durabilité et l'esthétique de votre meuble. Voici notre guide complet pour vous aider à décider.</p>
+    </div>
+
+    <!-- BOIS MASSIFS -->
+    <div class="mb-14">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="h-px flex-grow bg-w-200"></div>
+        <h2 class="text-3xl font-serif font-bold text-w-900 flex items-center gap-3">
+          <i class="fa-solid fa-tree text-gold"></i> Bois Massifs Naturels
+        </h2>
+        <div class="h-px flex-grow bg-w-200"></div>
+      </div>
+      <p class="text-w-500 text-sm mb-6 text-center">Le bois massif offre authenticité, longévité et chaleur naturelle. Chaque essence a ses caractéristiques uniques.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        ${WOODS.map(w=>`
+        <div class="wood-card card-hover">
+          <div class="wood-swatch-big" style="background:linear-gradient(135deg, ${w.color}, ${w.color}cc);">
+            <div class="h-full flex items-end p-3">
+              <span class="text-white text-xs font-bold drop-shadow-lg tracking-wide uppercase">${w.label}</span>
+            </div>
+          </div>
+          <div class="p-4">
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <span class="text-[10px] bg-w-100 text-w-600 px-2 py-0.5 rounded-full font-semibold">📍 ${w.origin}</span>
+              <span class="text-[10px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-semibold">💪 ${w.hardness}</span>
+            </div>
+            <p class="text-w-500 text-xs leading-relaxed mb-3">${w.desc}</p>
+            <div class="flex justify-between items-center border-t border-w-100 pt-3">
+              <span class="text-[10px] text-w-400 font-semibold uppercase tracking-wide">Gamme de prix</span>
+              <span class="text-gold font-bold text-sm">${w.price}</span>
+            </div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- MDF -->
+    <div class="mb-14">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="h-px flex-grow bg-w-200"></div>
+        <h2 class="text-3xl font-serif font-bold text-w-900 flex items-center gap-3">
+          <i class="fa-solid fa-layer-group text-gold"></i> Panneaux MDF
+        </h2>
+        <div class="h-px flex-grow bg-w-200"></div>
+      </div>
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex gap-3">
+        <i class="fa-solid fa-lightbulb text-amber-500 mt-0.5 flex-shrink-0"></i>
+        <p class="text-amber-800 text-sm leading-relaxed">Le <strong>MDF</strong> (Medium Density Fiberboard) est un panneau de fibres de bois compressées. Il offre une surface parfaitement lisse, idéale pour les finitions laquées et peintes. Moins cher que le bois massif, il est très utilisé pour les cuisines, meubles TV et rangements.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        ${MDF_TYPES.map(m=>`
+        <div class="wood-card card-hover">
+          <div class="wood-swatch-big flex items-end p-3" style="background:linear-gradient(135deg, ${m.color}, ${m.color}aa);">
+            <div>
+              <div class="mdf-badge mb-1">MDF</div>
+              <span class="text-w-900 text-sm font-bold drop-shadow">${m.label}</span>
+            </div>
+          </div>
+          <div class="p-4">
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <span class="text-[10px] bg-w-100 text-w-600 px-2 py-0.5 rounded-full font-semibold">📏 ${m.thickness}</span>
+              <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-semibold">🏠 ${m.use}</span>
+            </div>
+            <p class="text-w-500 text-xs leading-relaxed mb-3">${m.desc}</p>
+            <div class="grid grid-cols-2 gap-3 border-t border-w-100 pt-3">
+              <div>
+                <div class="text-[10px] font-bold text-green-700 uppercase tracking-wide mb-1.5">✅ Avantages</div>
+                ${m.pros.map(p=>`<div class="text-[10px] text-w-600 mb-1">• ${p}</div>`).join('')}
+              </div>
+              <div>
+                <div class="text-[10px] font-bold text-red-600 uppercase tracking-wide mb-1.5">⚠️ Limites</div>
+                ${m.cons.map(c=>`<div class="text-[10px] text-w-600 mb-1">• ${c}</div>`).join('')}
+              </div>
+            </div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- Comparison table -->
+    <div class="bg-white border border-w-100 rounded-2xl p-6 shadow-sm mb-10">
+      <h3 class="text-2xl font-serif font-bold text-w-900 mb-6 text-center">Bois Massif vs MDF — Quelle différence ?</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b-2 border-w-200">
+              <th class="text-left py-3 px-4 text-w-600 font-semibold text-xs uppercase tracking-wide">Critère</th>
+              <th class="text-center py-3 px-4 text-w-900 font-bold">🌳 Bois Massif</th>
+              <th class="text-center py-3 px-4 text-w-900 font-bold">📋 MDF</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${[
+              ['Durabilité','Excellente (50+ ans)','Bonne (10–20 ans)'],
+              ['Prix','Plus élevé','Économique'],
+              ['Surface','Naturelle avec veines','Parfaitement lisse'],
+              ['Finition idéale','Huile, vernis, cire','Laque, peinture'],
+              ['Humidité','Résistant (selon essence)','Sensible (sauf hydrofuge)'],
+              ['Poids','Variable selon essence','Lourd'],
+              ['Écologie','Naturel renouvelable','Colle formaldéhyde'],
+              ['Idéal pour','Meubles prestige, escaliers, portes','Cuisines laquées, meubles salon'],
+            ].map(([c,b,m],i)=>`
+            <tr class="${i%2===0?'bg-w-50':''} border-b border-w-50">
+              <td class="py-3 px-4 font-semibold text-w-700 text-xs">${c}</td>
+              <td class="py-3 px-4 text-center text-xs text-w-600">${b}</td>
+              <td class="py-3 px-4 text-center text-xs text-w-600">${m}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="devis-block text-center">
+      <h3 class="font-serif text-2xl font-bold text-white mb-3">Besoin d'un conseil personnalisé ?</h3>
+      <p class="text-white/70 text-sm mb-6">Notre équipe vous aidera à choisir le meilleur bois pour votre projet et votre budget.</p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
+        <a href="https://wa.me/212778036867?text=Bonjour%2C+j%27aimerais+des+conseils+sur+le+choix+du+bois+pour+mon+projet." target="_blank" class="flex-1 btn-green py-3.5 text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg">
+          <i class="fa-brands fa-whatsapp text-xl"></i> Conseil WhatsApp
+        </a>
+        <a href="tel:+212778036867" class="flex-1 bg-white/15 hover:bg-white/25 border border-white/25 text-white py-3.5 text-sm rounded-xl flex items-center justify-center gap-2 font-semibold transition">
+          <i class="fa-solid fa-phone"></i> +212 778-036867
+        </a>
+      </div>
+    </div>
+  </div>`,
+};
+
+document.addEventListener('DOMContentLoaded', () => { App.go('home'); });
+</script>
+</body>
+</html>
